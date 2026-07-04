@@ -1,0 +1,144 @@
+/* ═══════════════════════════════════════════════
+   AutoVault 3D — Showroom & Canvas Styles
+═══════════════════════════════════════════════ */
+
+/* ─── Canvas ─── */
+#showroom-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+}
+#showroom-canvas:active { cursor: grabbing; }
+
+/* ─── Camera Presets ─── */
+#cam-presets {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cam-btn {
+  width: 40px; height: 40px;
+  background: rgba(13,21,37,0.8);
+  border: 1px solid rgba(0,180,216,0.2);
+  color: var(--text-muted);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cam-btn:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: var(--cyan-dim);
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+/* ─── Carousel ─── */
+#carousel-wrap {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 50;
+  height: 100px;
+  background: linear-gradient(to top, rgba(7,11,20,0.98) 0%, rgba(7,11,20,0.85) 70%, transparent 100%);
+  display: flex;
+  align-items: center;
+  padding: 0 56px;
+  gap: 0;
+}
+
+#carousel-track {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  padding: 8px 4px;
+}
+#carousel-track::-webkit-scrollbar { display: none; }
+
+.carousel-arrow {
+  background: rgba(13,21,37,0.8);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.carousel-arrow:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+/* ─── Carousel Card ─── */
+.car-card {
+  flex-shrink: 0;
+  width: 140px;
+  background: rgba(13,21,37,0.9);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  backdrop-filter: blur(8px);
+}
+.car-card:hover {
+  border-color: rgba(0,180,216,0.4);
+  background: rgba(0,180,216,0.06);
+  transform: translateY(-3px);
+}
+.car-card.active {
+  border-color: var(--cyan);
+  background: var(--cyan-dim);
+  box-shadow: 0 0 16px var(--cyan-glow);
+}
+.car-card .card-brand {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+.car-card .card-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.car-card .card-price {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold);
+}
+.car-card .card-fuel {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}

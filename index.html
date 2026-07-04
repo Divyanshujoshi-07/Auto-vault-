@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoVault 3D | Premium Car Showroom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/showroom.css" />
+  <link rel="stylesheet" href="css/panels.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <!-- ─── Loading Screen ─── -->
+  <div id="loading-screen">
+    <div class="loader-content">
+      <div class="loader-logo">AUTO<span>VAULT</span></div>
+      <div class="loader-ring"></div>
+      <div class="loader-bar-wrap"><div class="loader-bar" id="loader-bar"></div></div>
+      <div class="loader-status" id="loader-status">Initializing showroom…</div>
+    </div>
+  </div>
+
+  <!-- ─── Navbar ─── -->
+  <nav id="navbar">
+    <div class="nav-logo">AUTO<span>VAULT</span><em>3D</em></div>
+    <div class="nav-links">
+      <button class="nav-btn active" data-view="showroom">Showroom</button>
+      <button class="nav-btn" id="compare-nav-btn">
+        Compare <span class="badge" id="compare-count">0</span>
+      </button>
+      <button class="nav-btn" id="fav-nav-btn">
+        Wishlist <span class="badge" id="fav-count">0</span>
+      </button>
+      <button class="nav-btn cta-btn" id="booking-nav-btn">Book Test Drive</button>
+    </div>
+    <div class="nav-icons">
+      <button class="icon-btn" id="day-night-toggle" title="Day / Night">☀️</button>
+      <button class="icon-btn" id="filter-toggle" title="Search & Filter">⚙️</button>
+    </div>
+  </nav>
+
+  <!-- ─── Canvas ─── -->
+  <canvas id="showroom-canvas"></canvas>
+
+  <!-- ─── Camera Presets ─── -->
+  <div id="cam-presets">
+    <button class="cam-btn" data-view="default">⌂</button>
+    <button class="cam-btn" data-view="front">F</button>
+    <button class="cam-btn" data-view="side">S</button>
+    <button class="cam-btn" data-view="rear">R</button>
+    <button class="cam-btn" data-view="top">T</button>
+  </div>
+
+  <!-- ─── Car Carousel ─── -->
+  <div id="carousel-wrap">
+    <button class="carousel-arrow" id="car-prev">&#8249;</button>
+    <div id="carousel-track"></div>
+    <button class="carousel-arrow" id="car-next">&#8250;</button>
+  </div>
+
+  <!-- ─── Info Panel ─── -->
+  <aside id="info-panel">
+    <div class="panel-top">
+      <div>
+        <div class="car-brand-label" id="info-brand">BMW</div>
+        <h2 class="car-title" id="info-name">M4 Competition</h2>
+      </div>
+      <div class="panel-top-actions">
+        <button class="icon-btn" id="fav-toggle" title="Wishlist">♡</button>
+        <button class="icon-btn" id="compare-add" title="Add to compare">⚖</button>
+      </div>
+    </div>
+    <div class="price-row">
+      <span class="car-price" id="info-price">₹95,00,000</span>
+      <span class="car-badge-pill" id="info-badge">Performance</span>
+    </div>
+
+    <div class="spec-grid">
+      <div class="spec-card"><span class="spec-lbl">Engine</span><span class="spec-val" id="s-engine">—</span></div>
+      <div class="spec-card"><span class="spec-lbl">Horsepower</span><span class="spec-val" id="s-hp">—</span></div>
+      <div class="spec-card"><span class="spec-lbl">Fuel</span><span class="spec-val" id="s-fuel">—</span></div>
+      <div class="spec-card"><span class="spec-lbl">Mileage</span><span class="spec-val" id="s-mileage">—</span></div>
+      <div class="spec-card"><span class="spec-lbl">Top Speed</span><span class="spec-val" id="s-speed">—</span></div>
+      <div class="spec-card"><span class="spec-lbl">0–100 km/h</span><span class="spec-val" id="s-accel">—</span></div>
+    </div>
+
+    <p class="car-desc" id="info-desc"></p>
+
+    <div class="safety-wrap" id="safety-wrap"></div>
+
+    <!-- Tabs -->
+    <div class="tab-bar">
+      <button class="tab active" data-tab="features">Features</button>
+      <button class="tab" data-tab="interact">Interact</button>
+      <button class="tab" data-tab="customize">Customize</button>
+    </div>
+
+    <div class="tab-pane active" id="tab-features">
+      <ul class="feature-list" id="feature-list"></ul>
+    </div>
+
+    <div class="tab-pane" id="tab-interact">
+      <div class="interact-grid">
+        <button class="interact-btn" id="ibtn-fl">🚪 Front Left</button>
+        <button class="interact-btn" id="ibtn-fr">🚪 Front Right</button>
+        <button class="interact-btn" id="ibtn-rl">🚪 Rear Left</button>
+        <button class="interact-btn" id="ibtn-rr">🚪 Rear Right</button>
+        <button class="interact-btn" id="ibtn-bonnet">🔧 Bonnet</button>
+        <button class="interact-btn" id="ibtn-trunk">🧳 Trunk</button>
+        <button class="interact-btn" id="ibtn-lights">💡 Headlights</button>
+        <button class="interact-btn secondary" id="ibtn-reset">↺ Reset All</button>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="tab-customize">
+      <div class="cust-section">
+        <label class="cust-label">Exterior Color</label>
+        <div class="color-swatches" id="color-swatches"></div>
+      </div>
+      <div class="cust-section">
+        <label class="cust-label">Wheel Style</label>
+        <div class="btn-group" id="wheel-btns">
+          <button class="opt-btn active" data-wheel="standard">Standard</button>
+          <button class="opt-btn" data-wheel="sport">Sport</button>
+          <button class="opt-btn" data-wheel="racing">Racing</button>
+        </div>
+      </div>
+      <div class="cust-section">
+        <label class="cust-label">Interior Theme</label>
+        <div class="btn-group" id="interior-btns">
+          <button class="opt-btn active" data-interior="black">⬛ Black</button>
+          <button class="opt-btn" data-interior="beige">🟫 Beige</button>
+          <button class="opt-btn" data-interior="red">🟥 Red</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-cta" id="panel-book">Book Test Drive</button>
+  </aside>
+
+  <!-- ─── Filter Sidebar ─── -->
+  <aside id="filter-sidebar" class="hidden">
+    <div class="sidebar-header">
+      <h3>Search & Filter</h3>
+      <button class="close-btn" id="filter-close">✕</button>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="search-input" placeholder="Search by name or brand…" />
+      <span>🔍</span>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Brand</span>
+      <div class="filter-tags" id="brand-tags">
+        <button class="ftag active" data-filter="brand" data-value="all">All</button>
+        <button class="ftag" data-filter="brand" data-value="BMW">BMW</button>
+        <button class="ftag" data-filter="brand" data-value="Toyota">Toyota</button>
+        <button class="ftag" data-filter="brand" data-value="Tata">Tata</button>
+        <button class="ftag" data-filter="brand" data-value="Mahindra">Mahindra</button>
+        <button class="ftag" data-filter="brand" data-value="Mercedes">Mercedes</button>
+        <button class="ftag" data-filter="brand" data-value="Hyundai">Hyundai</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Body Type</span>
+      <div class="filter-tags" id="body-tags">
+        <button class="ftag active" data-filter="body" data-value="all">All</button>
+        <button class="ftag" data-filter="body" data-value="Sedan">Sedan</button>
+        <button class="ftag" data-filter="body" data-value="SUV">SUV</button>
+        <button class="ftag" data-filter="body" data-value="Compact SUV">Compact SUV</button>
+        <button class="ftag" data-filter="body" data-value="Off-Road">Off-Road</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Fuel Type</span>
+      <div class="filter-tags" id="fuel-tags">
+        <button class="ftag active" data-filter="fuel" data-value="all">All</button>
+        <button class="ftag" data-filter="fuel" data-value="Petrol">Petrol</button>
+        <button class="ftag" data-filter="fuel" data-value="Diesel">Diesel</button>
+        <button class="ftag" data-filter="fuel" data-value="Electric">Electric</button>
+        <button class="ftag" data-filter="fuel" data-value="Hybrid">Hybrid</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Price Range</span>
+      <div class="price-range-wrap">
+        <input type="range" id="price-range" min="500000" max="20000000" step="100000" value="20000000">
+        <div class="price-range-labels">
+          <span>₹5L</span><span id="price-val">₹2Cr+</span>
+        </div>
+      </div>
+    </div>
+    <button class="btn-outline w-full" id="reset-filters">Reset Filters</button>
+  </aside>
+
+  <!-- ─── Compare Modal ─── -->
+  <div id="compare-modal" class="modal hidden">
+    <div class="modal-overlay" id="compare-overlay"></div>
+    <div class="modal-box wide">
+      <div class="modal-head">
+        <h2>Compare Cars</h2>
+        <button class="close-btn" id="compare-close">✕</button>
+      </div>
+      <div class="compare-scroll">
+        <table class="compare-tbl" id="compare-table"></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Wishlist Modal ─── -->
+  <div id="wishlist-modal" class="modal hidden">
+    <div class="modal-overlay" id="wishlist-overlay"></div>
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>My Wishlist</h2>
+        <button class="close-btn" id="wishlist-close">✕</button>
+      </div>
+      <div class="wishlist-grid" id="wishlist-grid"></div>
+      <p class="empty-msg hidden" id="wishlist-empty">No cars saved yet. Click ♡ on any car to add it.</p>
+    </div>
+  </div>
+
+  <!-- ─── Booking Modal ─── -->
+  <div id="booking-modal" class="modal hidden">
+    <div class="modal-overlay" id="booking-overlay"></div>
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2>Book Test Drive</h2>
+        <button class="close-btn" id="booking-close">✕</button>
+      </div>
+      <div class="booking-car-preview" id="booking-preview"></div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Full Name *</label>
+          <input type="text" id="f-name" placeholder="Rahul Sharma" />
+        </div>
+        <div class="form-field">
+          <label>Phone *</label>
+          <input type="tel" id="f-phone" placeholder="+91 98765 43210" />
+        </div>
+        <div class="form-field">
+          <label>Email *</label>
+          <input type="email" id="f-email" placeholder="rahul@email.com" />
+        </div>
+        <div class="form-field">
+          <label>Preferred Car</label>
+          <select id="f-car"></select>
+        </div>
+        <div class="form-field">
+          <label>Date *</label>
+          <input type="date" id="f-date" />
+        </div>
+        <div class="form-field">
+          <label>Time *</label>
+          <select id="f-time">
+            <option value="">Select time</option>
+            <option>10:00 AM</option><option>11:00 AM</option>
+            <option>12:00 PM</option><option>2:00 PM</option>
+            <option>3:00 PM</option><option>4:00 PM</option>
+            <option>5:00 PM</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label>Message (optional)</label>
+          <textarea id="f-msg" rows="3" placeholder="Any special requests…"></textarea>
+        </div>
+      </div>
+      <p class="form-err hidden" id="form-err"></p>
+      <button class="btn-cta w-full" id="booking-submit">Confirm Booking</button>
+    </div>
+  </div>
+
+  <!-- ─── Toast ─── -->
+  <div id="toast" class="hidden">
+    <span class="toast-icon">✅</span>
+    <div><strong>Booking Confirmed!</strong><br><small>Our team will contact you shortly.</small></div>
+  </div>
+
+  <!-- Scripts (order matters) -->
+  <script src="js/data/cars.js"></script>
+  <script src="js/scene/scene.js"></script>
+  <script src="js/scene/environment.js"></script>
+  <script src="js/scene/carBuilder.js"></script>
+  <script src="js/ui/filters.js"></script>
+  <script src="js/ui/favorites.js"></script>
+  <script src="js/ui/compare.js"></script>
+  <script src="js/ui/customizer.js"></script>
+  <script src="js/ui/booking.js"></script>
+  <script src="js/ui/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
